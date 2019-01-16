@@ -3,12 +3,15 @@
 #include<stdlib.h>
 
 #define RESET 0
+void prin();
+
 int sudokuSolver();
 int findEmptyCell();
 int isValid();
 void printGrid();
 void inputGrid();
-
+void sol_user();
+void nEmptyCell();
 int grid[4][4]= {{0, 0, 4, 3},
         {4, 0, 0, 0},
         {0, 4, 0, 0},
@@ -25,7 +28,6 @@ void main(){
 
     int i,j,solution=0;
     char ch;
-    //clrscr();
     printf("You can change the puzzle before running the program \nby changing the values in the \"grid\" array\n\n");
     printf("The Entered Sudoku puzzle is: \n");
     printGrid();
@@ -34,11 +36,19 @@ void main(){
     if(ch=='e')
        exit(0);
     else if(ch=='c'){
-    ///clrscr();
-    solution=sudokuSolver();
+   
+		nEmptyCell();
+		if(nCellVide){	
+			sol_user();
+		}
+		printf("\n-----\n");
+		prin();
+		printf("\n-----\n");
+
+	solution=sudokuSolver();
     if(solution){
- printf("\nThe Solved Sudoku is: \n\n");
- printGrid();
+	 printf("\nThe Solved Sudoku is: \n\n");
+	 printGrid();
     }
     else
     printf("\nNo Possible Solution!!\n\n");
@@ -47,6 +57,20 @@ void main(){
 
 }
 
+void nEmptyCell(){
+	int i,j;
+
+ for(i=row;i<=3;i++)
+     for(j=0;j<=3;j++){
+	  if(grid[i][j]==0)
+	  
+	   nCellVide++;
+	   
+     }
+	
+}
+	
+
 int findEmptyCell(){
  int i,j;
 
@@ -54,7 +78,6 @@ int findEmptyCell(){
      for(j=0;j<=3;j++){
 	  if(grid[i][j]==0)
 	   {
-	   nCellVide++;
 	   row=i;col=j;
 	   return 1;
 	   }
@@ -87,25 +110,31 @@ int isValid(int cellRow, int cellCol, int num){
 }
 int sudokuSolver(){
 
-     int digit;
+     int digit,k=0;
      int prevRow,prevCol; // for backtracking
      totalNumOfCalls++;
 
      if(!findEmptyCell())
  return 1;
 
-     for(digit=1;digit<=4;digit++){
-  if(isValid(row,col,digit)){
-  grid[row][col]=digit;
-  prevRow=row;prevCol=col;
-  if(sudokuSolver())
-   return 1;
-//while backtracking assigning previous values to row and col
-  row=prevRow;col=prevCol;
-  grid[row][col]=RESET;
-  }
-
+    //for(digit=1;digit<=4;digit++){
+		   printf("\tiiiiiiinnnnn-------------\n");
+	for(k=0;k<nCellVide;k++){
+		  if(isValid(row,col,U[k])){
+			  printf("\tiiiiiiinnnnn-------------\nisvalid: %d %d",isValid(row,col,U[k]),U[k]);
+			  grid[row][col]=U[k];
+			  prevRow=row;prevCol=col;
+			  if(sudokuSolver())
+			   return 1;
+			//while backtracking assigning previous values to row and col
+			  row=prevRow;col=prevCol;
+			  grid[row][col]=RESET;
+		  
+		  }
+		  
+		
     }
+	
 
     return 0;
 
@@ -113,19 +142,27 @@ int sudokuSolver(){
 
 void sol_user(){
 	int n;
-	A=(int*)malloc(nCellVide*sizeof(int));
+	U=(int*)malloc(nCellVide*sizeof(int));
 
 	for(int i=0;i<nCellVide;i++){
 		scanf("%d",&n);
-		A[i]=n;
+		U[i]=n;
 	}	
 }
 
+void prin(){
+
+	//U=(int*)malloc(nCellVide*sizeof(int));
+
+	for(int i=0;i<nCellVide;i++){
+		printf("%d",U[i]);
+	}	
+}
 void printGrid(){
 
  int i,j;
 
- //printf("\t-------------------------\n");
+ printf("\t-------------\n");
  for(i=0;i<4;i++){
     printf("\t");
     for(j=0;j<4;j++){
@@ -140,8 +177,8 @@ void printGrid(){
 
    }
 
-   //if((i+1)%2==0 )
-    //   printf("\n\t-------------------------");
+   if((i+1)%2==0 )
+       printf("\n\t-------------");
 
    printf("\n");
 
